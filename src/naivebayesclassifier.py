@@ -4,6 +4,7 @@ import math
 import counter
 
 class NaiveBayesClassifier:
+    # TODO: Add documentation
     def __init__(self, featurizer=lambda x: [x], classer=lambda x: x):
         self.featurizer = featurizer
         self.classer = classer
@@ -60,7 +61,6 @@ class NaiveBayesClassifier:
                 likelihood *= cond
 
             final = likelihood * prior
-            print('{}\t{}'.format(final, cls))
 
             if final > argmax:
                 argmax = final

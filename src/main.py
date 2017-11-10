@@ -3,7 +3,7 @@
 import argparse
 import csv
 import math
-import sys
+import re
 
 from naivebayesclassifier import NaiveBayesClassifier
 
@@ -41,9 +41,13 @@ def featurizer(sample):
     Returns:
     Provides the features of the given sample.
     """
+    # Remove punctuation and convert into lowercase.
     response = sample[3]
-    words = response.split()
-    return words[:3]
+    processed = re.sub(r'\p', '', response).lower()
+    words = processed.split()
+    features = words
+
+    return features
 
 
 parser = argparse.ArgumentParser()
