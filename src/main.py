@@ -64,6 +64,7 @@ with open(args.train, 'r') as csv_train:
             continue
 
         nbc.add_sample(row)
+nbc.smooth()
 
 
 correct = 0
