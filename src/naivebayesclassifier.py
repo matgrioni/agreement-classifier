@@ -4,8 +4,24 @@ import math
 import counter
 
 class NaiveBayesClassifier:
-    # TODO: Add documentation
+    """
+    A classifier that uses Naive Bayes calculations. The general structure of
+    this classifier is to provide functions to featurize and to class sample
+    data. This processed sample data is used to amass probability functions that
+    will be used to classify new documents.
+    """
+
     def __init__(self, featurizer=lambda x: [x], classer=lambda x: x):
+        """
+        Create a new classifier.
+
+        Args:
+        featurizer: A function argument that is given a data sample and returns
+                    a list of features. By default this function returns a
+                    singleton list.
+        classer: A function that returns the class of a data sample. By default
+                 this function is the identity.
+        """
         self.featurizer = featurizer
         self.classer = classer
 
@@ -14,6 +30,13 @@ class NaiveBayesClassifier:
         self.class_to_feature_counts = counter.Counter()
 
     def add_sample(self, sample):
+        """
+        Add a new data sample.
+
+        Args:
+        sample: The data sample to take into account to the probability
+                distribution.
+        """
         cls = self.classer(sample)
         features = self.featurizer(sample)
 
@@ -43,6 +66,15 @@ class NaiveBayesClassifier:
 
 
     def classify(self, sample):
+        """
+        Classify the given sample among the possible classes.
+
+        Args:
+        sample: The sample to classify.
+
+        Returns:
+        The most likely class given the data seen so far.
+        """
         # TODO: What if len(features) == 0
         features = self.featurizer(sample)
 
