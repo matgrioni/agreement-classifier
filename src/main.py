@@ -70,7 +70,8 @@ args = parser.parse_args()
 
 
 # Train our classifier
-nbc = NaiveBayesClassifier(featurizer, classer)
+nbc = NaiveBayesClassifier(featurizer, classer, ('AGREE', 'DISAGREE'))
+
 with open(args.train, 'r') as csv_train:
     train_reader = csv.reader(csv_train, delimiter=',')
     next(train_reader)

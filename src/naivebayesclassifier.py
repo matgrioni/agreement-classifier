@@ -11,19 +11,21 @@ class NaiveBayesClassifier:
     will be used to classify new documents.
     """
 
-    def __init__(self, featurizer=lambda x: [x], classer=lambda x: x):
+    def __init__(self, featurizer, classer, classes):
         """
         Create a new classifier.
 
         Args:
         featurizer: A function argument that is given a data sample and returns
-                    a list of features. By default this function returns a
-                    singleton list.
-        classer: A function that returns the class of a data sample. By default
-                 this function is the identity.
+                    a list of features.
+        classer: A function that returns the class of a data sample.
+        classes: The possible classes the classifier will see. Since we might
+                 not see all classes in the data, this needs to be explicitly
+                 specified.
         """
         self.featurizer = featurizer
         self.classer = classer
+        self.classes = classes
 
         self.class_counts = counter.Counter()
         self.feature_counts = collections.defaultdict(lambda: counter.Counter())
@@ -53,12 +55,8 @@ class NaiveBayesClassifier:
         size is incremented by the number of features we have seen. Call this
         after all data has been added to the classifier.
         """
-        # TODO: Make classes it's own thing so that it is not dependent on the
-        # data we have seen so far.
-        classes = self.class_counts.keys()
-
         for feature, counter in self.feature_counts.items():
-            for cls in classes:
+            for cls in self.classes:
                 self.feature_counts[feature][cls] += 1
 
         for cls in self.class_to_feature_counts:
@@ -80,7 +78,7 @@ class NaiveBayesClassifier:
 
         argmax = -math.inf
         maxcls = None
-        for cls in self.class_counts.keys():
+        for cls in self.classes:
             prior = self.class_counts.probability(cls)
 
             likelihood = 1
