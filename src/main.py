@@ -10,6 +10,9 @@ from naivebayesclassifier import NaiveBayesClassifier
 from stemmer import Stemmer
 
 
+AGREE_CLASS = 'AGREE'
+DISAGREE_CLASS = 'DISAGREE'
+
 stemmer = Stemmer()
 
 
@@ -28,10 +31,9 @@ def classer(sample):
     """
     score = float(sample[1])
     if score >= 1 and score <= 5:
-        # TODO: Use non magic.
-        return 'AGREE'
+        return AGREE_CLASS
     elif score < -1 and score >= -5:
-        return 'DISAGREE'
+        return DISAGREE_CLASS
 
 
 def featurizer(sample):
@@ -50,6 +52,8 @@ def featurizer(sample):
     # preprocessing.
     response = sample[3]
     processed = re.sub(r'&#8217;', r"'", response)
+    processed = re.sub(r'&#8212;', r"-", response)
+    processed = re.sub(r'([^\w\s\'])', r' \1 ', response)
     processed = processed.lower()
     words = processed.split()
 
@@ -75,8 +79,7 @@ args = parser.parse_args()
 
 
 # Train our classifier
-nbc = NaiveBayesClassifier(featurizer, classer, ('AGREE', 'DISAGREE'))
-
+nbc = NaiveBayesClassifier(featurizer, classer, (AGREE_CLASS, DISAGREE_CLASS))
 with open(args.train, 'r') as csv_train:
     train_reader = csv.reader(csv_train, delimiter=',')
     next(train_reader)
@@ -95,7 +98,6 @@ true_counts = Counter()
 real_counts = Counter()
 
 # Now evaluate the trainied classifier.
-# TODO: Should there be a wrapper around this, such as a class.
 with open(args.test, 'r') as csv_test:
     test_reader = csv.reader(csv_test, delimiter=',')
     next(test_reader)
@@ -124,6 +126,6 @@ for cls, count in false_counts.items():
     incorrect += count
 
 print('Accuracy: {}'.format(correct / (correct + incorrect)))
-for cls in true_counts:
+for cls in nbc.classes:
     print('Precision for {}: {}'.format(cls, true_counts[cls] / (true_counts[cls] + false_counts[cls])))
     print('Recall for {}: {}'.format(cls, true_counts[cls] / real_counts[cls]))
