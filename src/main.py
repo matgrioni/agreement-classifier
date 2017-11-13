@@ -7,6 +7,10 @@ import re
 
 from counter import Counter
 from naivebayesclassifier import NaiveBayesClassifier
+from stemmer import Stemmer
+
+
+stemmer = Stemmer()
 
 
 def classer(sample):
@@ -46,19 +50,20 @@ def featurizer(sample):
     # preprocessing.
     response = sample[3]
     processed = re.sub(r'&#8217;', r"'", response)
-    processed = re.sub(r"([^\w'])", r' \1 ', processed).lower()
-
+    processed = processed.lower()
     words = processed.split()
-    bigrams = []
-    for i, word in enumerate(words[:10]):
-        if i + 1 < len(words):
-            next_word = words[i + 1]
-        else:
-            next_word = None
-        bigrams.append((word, next_word))
 
-    features = words[:30]
-    features.extend(bigrams)
+    stems = list(map(lambda word: stemmer.stem(word), words))
+    bistems = []
+    for i, stem in enumerate(stems[:40]):
+        if i + 1 < len(stems):
+            next_stem = stems[i + 1]
+        else:
+            next_stem = None
+        bistems.append((stem, next_stem))
+
+    features = stems[:40]
+    features.extend(bistems)
 
     return features
 
