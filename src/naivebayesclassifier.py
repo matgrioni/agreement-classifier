@@ -17,7 +17,7 @@ class NaiveBayesClassifier:
 
         Args:
         featurizer: A function argument that is given a data sample and returns
-                    a list of features.
+                    a list of features, which cannot ever be empty.
         classer: A function that returns the class of a data sample.
         classes: The possible classes the classifier will see. Since we might
                  not see all classes in the data, this needs to be explicitly
@@ -73,10 +73,9 @@ class NaiveBayesClassifier:
         Returns:
         The most likely class given the data seen so far.
         """
-        # TODO: What if len(features) == 0
         features = self.featurizer(sample)
 
-        argmax = -math.inf
+        argmax = float('-inf')
         maxcls = None
         for cls in self.classes:
             prior = self.class_counts.probability(cls)
