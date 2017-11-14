@@ -9,13 +9,13 @@ class Stemmer:
         self.internal = nltk.stem.LancasterStemmer()
 
     def stem(self, word):
-    """
-    Given a word, what is its stem.
+        """
+        Given a word, what is its stem.
 
-    Args:
-    word: The word to stem.
+        Args:
+        word: The word to stem.
 
-    Returns:
-    The stem of the given word.
-    """
+        Returns:
+        The stem of the given word.
+        """
         return self.internal.stem(word)
